@@ -15,7 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/newsScrape", { useNewUrlParser: true });
+if(process.env.MONGODB){
+    mongoose.connect(process.env.MONGODB, { useNewUrlParser: true });
+} else {
+    mongoose.connect("mongodb://localhost/newsScrape", { useNewUrlParser: true }); }
 
 app.get("/scrape", function (req, res) {
     axios.get("https://www.nytimes.com/section/sports").then(function (response) {
@@ -62,11 +65,14 @@ app.get("/articles", function (err, res) {
 app.get("/articles/:id", function(req, res) {
     
     db.Article.findOne({ _id: req.params.id })
+    
       .populate("note")
       .then(function(dbArticle) {
+        // If we were able to successfully find an Article with the given id, send it back to the client
         res.json(dbArticle);
       })
       .catch(function(err) {
+        // If an error occurred, send it to the client
         res.json(err);
       });
   });
