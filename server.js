@@ -27,7 +27,7 @@ app.get("/scrape", function (req, res) {
 
             result.title = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").text();
 
-            result.link = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").attr("href");
+            result.link = "https://www.nytimes.com" + $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").attr("href");
 
             result.summary = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("p.e134j7ei1").text();
 
@@ -44,7 +44,6 @@ app.get("/scrape", function (req, res) {
                 });
 
         });
-        console.log(result);
     });
     res.send("Scrape Completed");
 });
@@ -60,16 +59,17 @@ app.get("/articles", function (err, res) {
         });
 });
 
-app.get("/article/:id", function (req, res) {
-    db.Article.findOne({ _id: req.params._id })
-        .populate("note")
-        .then(function (dbArticle) {
-            res.json(dbArticle);
-        })
-        .catch(function (err) {
-            res.json(err);
-        });
-});
+app.get("/articles/:id", function(req, res) {
+    
+    db.Article.findOne({ _id: req.params.id })
+      .populate("note")
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+  });
 
 app.post("/articles/:id", function (req, res) {
     db.Note.create(req.body)
