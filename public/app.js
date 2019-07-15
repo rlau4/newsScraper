@@ -6,9 +6,9 @@ $.getJSON("/articles", function (data) {
     $("#articles").append(
       "<div class='card' style='width: 18rem;'>" +
       "<img src ='" + data[i].img + "' class='card-img-top' alt='...'" +
-      "<h5 class='card-title'> <a href='https://www.nytimes.com" + data[i].link +"'>" + data[i].title + "</a> </h5>"+
+      "<h5 class='card-title'> <a href='https://www.nytimes.com" + data[i].link + "'>" + data[i].title + "</a> </h5>" +
       "<p class='card-text'>" + data[i].summary + "</p>" +
-      "<h6> Add New Note</h6>"
+      "<h6 data-id='" + data[i]._id + "'> Click here to add a note!</h6> </div>"
     );
   }
 });
@@ -30,7 +30,7 @@ $(document).on("click", "h6", function () {
     .then(function (data) {
       console.log(data);
       // The title of the article
-      $("#notes").append("<h2> Add a Note </h2>");
+      $("#notes").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
       $("#notes").append("<label for= 'titleinput'> Title </lable> <input class='form control' id='titleinput' name='title' >");
       // A textarea to add a new note body
@@ -38,6 +38,11 @@ $(document).on("click", "h6", function () {
       // A button to submit a new note, with the id of the article saved to it
       $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
+      //Puts new notes on page
+      $("#notes").append("</br> <div class='card' style='width: 18rem;'>" +
+        "<p class='card-text'>" + data.note.title + "</p>" +
+        "<p class='card-text'>" + data.note.body + "</p>" 
+      )
       // If there's a note in the article
       if (data.note) {
         // Place the title of the note in the title input
