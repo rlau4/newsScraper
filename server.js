@@ -1,8 +1,8 @@
 var express = require("express");
-var exphbs = require("express-handlebars");
 var mongoose = require("mongoose");
 var axios = require("axios");
 var cheerio = require("cheerio");
+var logger = require("morgan");
 
 var db = require("./models");
 
@@ -10,32 +10,41 @@ var PORT = 3000;
 
 var app = express();
 
-mongoose.connect("mongodb://localhost/newsScraper", { useNewUrlParser: true });
+app.use(logger("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+mongoose.connect("mongodb://localhost/newsScrape", { useNewUrlParser: true });
 
 app.get("/scrape", function (req, res) {
     axios.get("https://www.nytimes.com/section/sports").then(function (response) {
         var $ = cheerio.load(response.data);
 
-        var results = [];
+        var result = {};
 
-        $("#collection-sports article.css-15cbhtu").each(function (i, element) {
+        $("#collection-sports li.ekkqrpp3").each(function (i, element) {
 
-            var title = $(element).children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").text();
+            result.title = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").text();
 
-            var link = $(element).children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").attr("href");
+            result.link = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("h2.e134j7ei0").find("a").attr("href");
 
-            var summary = $(element).children("div.css-10wtrbd").children("p.e134j7ei1").text();
+            result.summary = $(element).children("article.css-15cbhtu").children("div.css-10wtrbd").children("p.e134j7ei1").text();
 
-            var image = $(element).children("figure.photo").children("a").children("img").attr("src");
+            result.img = $(element).children("article.css-15cbhtu").children("figure.photo").children("a").children("img").attr("src");
 
-            results.push({
-                title: title,
-                link: link,
-                summary: summary,
-                image: image
-            });
+            db.Article.create(result)
+                .then(function (dbArticle) {
+                    // View the added result in the console
+                    console.log(dbArticle);
+                })
+                .catch(function (err) {
+                    // If an error occurred, log it
+                    console.log(err);
+                });
+
         });
-        console.log(results);
+        console.log(result);
     });
     res.send("Scrape Completed");
 });

@@ -12,11 +12,11 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
-  img:{
-      type: String,
-      required: true
+  summary: {
+    type: String,
+    required: true
   },
-  exapmle: {
+  img:{
       type: String,
       required: true
   },
