@@ -46,7 +46,7 @@ app.get("/scrape", function (req, res) {
 
         });
     });
-    res.send("Scrape Completed");
+    res.send("<a href='https://warm-meadow-45745.herokuapp.com'>Return to Main site</a>");
 });
 
 app.get("/articles", function (err, res) {

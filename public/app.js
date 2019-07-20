@@ -8,7 +8,7 @@ $.getJSON("/articles", function (data) {
       "<img src ='" + data[i].img + "' class='card-img-top' alt='...'" +
       "<h5 class='card-title'> <a href='https://www.nytimes.com" + data[i].link + "'>" + data[i].title + "</a> </h5>" +
       "<p class='card-text'>" + data[i].summary + "</p>" +
-      "<h6 data-id='" + data[i]._id + "'> Click here to add a note!</h6> </div>"
+      "<h6 data-id='" + data[i]._id + "'> Click here to add and View a note!</h6> </div>"
     );
   }
 });
