@@ -15,10 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-if(process.env.MONGODB){
-    mongoose.connect(process.env.MONGODB, { useNewUrlParser: true });
-} else {
-    mongoose.connect("mongodb://localhost/newsScrape", { useNewUrlParser: true }); }
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/Shows";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/scrape", function (req, res) {
     axios.get("https://www.nytimes.com/section/sports").then(function (response) {
